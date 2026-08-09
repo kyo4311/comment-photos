@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "本地图片点评管理器",
+  "version": "1.0.0",
+  "description": "管理本地图片文件夹，为图片撰写点评并持久化存储，重命名后点评不丢失",
+  "action": {
+    "default_title": "打开本地图片点评管理器"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"],
+  "optional_host_permissions": [
+    "https://open.bigmodel.cn/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>本地图片点评管理器</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="toolbar">
+    <button id="btn-folder" class="btn btn-primary">📁 选择文件夹</button>
+    <span id="folder-name" class="folder-name" title=""></span>
+    <div class="spacer"></div>
+    <div class="group">
+      <label class="filter" for="filter">筛选</label>
+      <select id="filter">
+        <option value="all">全部</option>
+        <option value="commented">已点评</option>
+        <option value="uncommented">未点评</option>
+      </select>
+    </div>
+    <button id="btn-ai-settings" class="btn" title="配置 AI 点评服务商、API Key 与提示词">✨ AI 设置</button>
+    <button id="btn-refresh" class="btn" title="重新扫描当前文件夹">🔄 刷新</button>
+  </header>
+
+  <main>
+    <section id="welcome" class="welcome hidden">
+      <div class="welcome-card">
+        <h2>本地图片点评管理器</h2>
+        <p>选择一个本地图片文件夹，为图片撰写点评。所有点评仅保存在本地 <code>comments.json</code> 中，<b>不会修改任何原图</b>。即使以后重命名或移动图片，点评也能通过文件内容匹配回来。</p>
+        <button id="btn-folder-welcome" class="btn btn-primary btn-large">📁 选择文件夹</button>
+        <button id="btn-reauth" class="btn btn-secondary hidden">🔐 重新授权</button>
+      </div>
+    </section>
+
+    <section id="noimages" class="noimages hidden">
+      <p>此文件夹中没有图片文件（支持 jpg / png / webp / bmp / gif）。</p>
+      <button id="btn-folder-again" class="btn">📁 更换文件夹</button>
+    </section>
+
+    <section id="grid-section" class="grid-section hidden">
+      <div id="grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="statusbar" class="status-text">共 0 张 | 已点评 0 张</span>
+  </footer>
+
+  <div id="progress" class="progress hidden">
+    <div class="progress-box">
+      <div class="spinner"></div>
+      <div id="progress-text" class="progress-text">处理中…</div>
+    </div>
+  </div>
+
+  <div id="dialog" class="dialog hidden" role="dialog" aria-modal="true" aria-label="编辑图片信息">
+    <div id="dialog-overlay" class="dialog-overlay"></div>
+    <div class="dialog-body">
+      <div class="dialog-preview">
+        <img id="dialog-img" alt="预览" class="hidden">
+      </div>
+      <div class="dialog-editor">
+        <div class="dialog-title" id="dialog-title"></div>
+        <div class="dialog-path" id="dialog-path"></div>
+        <label class="dialog-label">标题</label>
+        <input id="dialog-field-title" class="dialog-input" type="text" placeholder="标题（默认文件名）">
+        <label class="dialog-label">时间</label>
+        <input id="dialog-field-time" class="dialog-input" type="text" placeholder="时间，格式 YYYYMMDD">
+        <label class="dialog-label">点评</label>
+        <textarea id="dialog-text" class="dialog-input" placeholder="输入点评文字…（支持中文）" rows="8"></textarea>
+        <div class="dialog-ai-row">
+          <button id="dialog-ai" class="btn" title="让 AI 看图并生成点评（可选）。会把当前图片发送给所选 AI 服务商">✨ AI 点评</button>
+          <span id="dialog-ai-status" class="ai-status"></span>
+        </div>
+        <div class="dialog-actions">
+          <span class="dialog-hint">Ctrl+Enter 保存 · Esc 取消</span>
+          <div>
+            <button id="dialog-cancel" class="btn btn-secondary">取消</button>
+            <button id="dialog-save" class="btn btn-primary">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ai-dialog" class="dialog hidden" role="dialog" aria-modal="true" aria-label="AI 点评设置">
+    <div id="ai-overlay" class="dialog-overlay"></div>
+    <div class="ai-body">
+      <div class="dialog-title">✨ AI 点评设置</div>
+      <p class="ai-privacy">AI 点评会把<b>当前选中的图片</b>发送给智谱 GLM（模型 GLM-4.6V-Flash），用于生成点评，随后仅在本地保存文字。可随时清空 API Key 来停用。</p>
+      <label class="dialog-label">API Key</label>
+      <input id="ai-key" class="dialog-input" type="password" placeholder="粘贴智谱开放平台 API Key">
+      <p class="ai-hint">如何申请 API Key：前往智谱开放平台 GLM-4.6V-Flash 免费申请页 →<a href="https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash" target="_blank" rel="noopener">https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash</a></p>
+      <label class="dialog-label">点评提示词</label>
+      <textarea id="ai-prompt" class="dialog-input" rows="5"></textarea>
+      <div class="dialog-actions">
+        <button id="ai-test" class="btn">测试连接</button>
+        <div>
+          <button id="ai-cancel" class="btn btn-secondary">取消</button>
+          <button id="ai-save" class="btn btn-primary">保存</button>
+        </div>
+      </div>
+      <div id="ai-status" class="ai-status"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
